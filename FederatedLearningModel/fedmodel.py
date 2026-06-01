@@ -13,6 +13,15 @@ class DNN(nn.Module):
             ### Between each layers we adapt the activation function oif leakyRely with negative slope of 0.001
             self.fc_layers.append(nn.LeakyReLU(negative_slope=0.001))
         self.fc_layers.append(nn.Linear(hidden_size[-1], num_classes)) ## This is used as the dense layer where we just convert the given last hidden layer to the number of classes 
+    
+    def forward(self,x):
+        for layer in self.fc_layers:
+            x = layer(x) ### Here x stores the output for each layer 
+        return x 
+    
+
+    @property 
+    def device(self):
         
 
 
