@@ -31,3 +31,23 @@ def accuracy_batch(y_batch, y_pred):
     accuracy = (predicted == y_batch).sum().item() / len(y_batch)
     return accuracy
 
+### For calculating the Mean Metric 
+
+class MeanMetric():
+    def __init__(self):
+        self.total = np.float32(0)
+        self.count = np.float32(0)
+
+    def update_state(self, value):
+        self.total += value
+        self.count += 1 
+    
+    def result(self):
+        if self.count > 0: 
+            return self.total /self.count 
+        else:
+            return np.nan
+    
+    def reset_state(self):
+        self.total = np.float32(0)
+        self.count = np.float32(0)
