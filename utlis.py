@@ -22,3 +22,12 @@ def loading_pickle(filepath):
     with open(filepath, 'rb') as f:
         obj = pickle.load(f)
     return obj 
+
+
+### Computing the accuracy of the given batch 
+
+def accuracy_batch(y_batch, y_pred):
+    _, predicted = torch.max(y_pred, 1)
+    accuracy = (predicted == y_batch).sum().item() / len(y_batch)
+    return accuracy
+
