@@ -8,3 +8,10 @@ from torch.utils.data import Dataset, DataLoader
 from torchvision.transforms import functional as TF
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
+
+
+### Feature One: Creating object for saving the given objects in pickle format:
+
+def savein_pickle(path, object):
+    with open(path, 'wb') as f:
+        pickle.dump(object, f)
