@@ -15,3 +15,10 @@ from sklearn.model_selection import train_test_split
 def savein_pickle(path, object):
     with open(path, 'wb') as f:
         pickle.dump(object, f)
+    
+
+### Feature Two: Utlis for loading the objecst from the pickle format 
+def loading_pickle(filepath):
+    with open(filepath, 'rb') as f:
+        obj = pickle.load(f)
+    return obj 
