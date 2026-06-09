@@ -66,6 +66,8 @@ class JoinCustomDataset(Dataset):
     def __init__(self, features_path, labels_path):
         self.feature_data = pd.read_csv(features_path)
         self.labels_data = pd.read_csv(labels_path)
+        if 'Unnamed: 0' in self.labels_data.columns:
+            self.labels_data = self.labels_data.drop(columns=['Unnamed: 0'])
         self.data = pd.concat([self.feature_data, self.labels_data], axis = 1)
         self.features = self.data.iloc[:,:-1].values ## Every column except the last one
         self.labels = self.data.iloc[:,-1].values ## The last column 
