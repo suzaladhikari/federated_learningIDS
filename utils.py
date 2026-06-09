@@ -58,3 +58,4 @@ def performance_analyzer(metric = {'train_loss', 'train_acc', 'valid_loss', 'val
         performance_dict[key] = MeanMetric()
         performance_log[key] = list()
     return performance_dict, performance_log
+
