@@ -51,3 +51,10 @@ class MeanMetric():
     def reset_state(self):
         self.total = np.float32(0)
         self.count = np.float32(0)
+
+def performance_analyzer(metric = {'train_loss', 'train_acc', 'valid_loss', 'valid_acc'}):
+    performance_dict, performance_log = dict(), dict()
+    for key in metric:
+        performance_dict[key] = MeanMetric()
+        performance_log[key] = list()
+    return performance_dict, performance_log
