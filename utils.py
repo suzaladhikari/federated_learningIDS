@@ -78,5 +78,11 @@ class CustomDataset(Dataset):
         self.features = torch.FloatTensor(self.features)
         self.labels = torch.LongTensor(self.labels)
 
+    def __len__(self):
+        return len(self.data)
     
+    def __getitem__(self,idx):
+        feature = self.features[idx]
+        label = self.labels[idx]
+        return feature ,label 
     
