@@ -59,3 +59,24 @@ def performance_analyzer(metric = {'train_loss', 'train_acc', 'valid_loss', 'val
         performance_log[key] = list()
     return performance_dict, performance_log
 
+
+### Creating a custom dataset that converts to the format needed while doing the data processing !
+
+class CustomDataset(Dataset):
+    def __init__(self, csv_path):
+        self.data = pd.read_csv(csv_path)
+        self.features = self.data.iloc[:,:-1].values ## Every column except the last one
+        self.labels = self.data.iloc[:,-1].values ## The last column 
+
+        ## Label Encoding- If there are any string classes
+
+        label_encoder = LabelEncoder()
+        self.labels = label_encoder.fit_transform(self.labels)
+
+        ## Converting them to the tensor format 
+
+        self.features = torch.FloatTensor(self.features)
+        self.labels = torch.LongTensor(self.labels)
+
+    
+    
