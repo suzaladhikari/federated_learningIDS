@@ -3,6 +3,7 @@ import copy
 from tqdm import tqdm
 import torch
 from torch import nn
+from nids_training import evaluate_model
 
 def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs, optimizier_args):
     local_model = copy.deepcopy(global_model) ## Copying the global model and use it in the local clients
