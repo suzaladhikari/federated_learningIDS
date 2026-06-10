@@ -20,6 +20,9 @@ def train_model(model,mode = True):
     modes = [module.training for module in model.modules()] ## Saving the original state of the model, True or False means active or inactive
     try: ## Tell model to try doing this
         yield model.train(mode) ## If mode if False then it goes to eval if true goes to training
+    except Exception as e: 
+        print(f"Something went wrong during evaluation{e}") ## Playing the safe game of returning what went wrong during evaluation 
+        raise
     finally: ## Doesnot matter the condition model has to do this 
         for i, module in enumerate(model.modules()):
             module.training = modes[i] ## Storing back the original state 
@@ -42,5 +45,9 @@ def evaluate_model(model, data_loader, loss_function, tqdm_desc = None, seed = 4
 
         return loss_metric.result()
     
+
+## Everything the evaulate_model is doing is temporarily evaulating them model and if something goes wrong boom restore the model's original state 
+
     
+
 
