@@ -14,15 +14,18 @@ from tqdm import tqdm
 import utils
 @contextmanager
 def train_model(model,mode = True):
-    modes = [module.training for module in model.modules()] ## This stores True if the layer is in training mode and false if the layer is in evaluation mode.
+    modes = [module.training for module in model.modules()] ## Saving the original state of the model, True or False means active or inactive
     try: ## Tell model to try doing this
         yield model.train(mode) ## If mode if False then it goes to eval if true goes to training
     finally: ## Doesnot matter the condition model has to do this 
         for i, module in enumerate(model.modules()):
-            module.training = modes[i]
+            module.training = modes[i] ## Storing back the original state 
 
 def eval_mode(model):
     return train_model(model, False)
+
+
+@torch.no_grad()
 def evaluate_model(model, data_loader, loss_function, tqdm_desc = None, seed = 42):
     device = model.device
     loss_metric = utils.MeanMetric()
