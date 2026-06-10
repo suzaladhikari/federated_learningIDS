@@ -12,12 +12,16 @@ def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs,
     optimizer = torch.optim.Adam(local_model.parameters(), **optimizier_args) ## Using the Adam Optimization that takes the kwargs of the optimizer_args dictionary which can contain any parameters
     loss_function = nn.CrossEntropyLoss() ## Using the cross entropy loss
 
-    for epoch in num_local_epohcs:
+    for epoch in range(num_local_epohcs):
         ## Using the tqdm to track the progess bar virtually 
         for (x,y) in tqdm(client_loader, desc = 'epoch {}/{}'.format(epoch+1, num_local_epohcs)):
+            optimizer.zero_grad()
             x = x.to(device)
             y = y.to(device)
             loss = loss_function(local_model(x), y)
+            loss.backward()
+            optimizer.step()
+            
             
 
 
