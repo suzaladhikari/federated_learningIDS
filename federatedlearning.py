@@ -23,10 +23,18 @@ def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs,
             loss.backward()
             optimizer.step()
         
-        training_loss = evaluate_model(local_model, client_loader, loss_function, tqdm_desc='Local Training Loss')
-        testing_loss = evaluate_model(local_model, test_loader, loss_function, tqdm_desc='Local Testing Loss')
+    training_loss = evaluate_model(local_model, client_loader, loss_function, tqdm_desc='Local Training Loss')
+    testing_loss = evaluate_model(local_model, test_loader, loss_function, tqdm_desc='Local Testing Loss')
             
-            
+      ## Returning the dictionary 
+    local_update = {
+        'local_weights': local_model.state_dict(),
+        'num_samples': len(client_loader.dataset),
+        'train_loss': training_loss,
+        'test_loss': testing_loss  
+      }      
+    
+    return local_update
 
 
 
