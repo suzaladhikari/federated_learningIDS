@@ -22,6 +22,9 @@ def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs,
             loss = loss_function(local_model(x), y)
             loss.backward()
             optimizer.step()
+        
+        training_loss = evaluate_model(local_model, client_loader, loss_function, tqdm_desc='Local Training Loss')
+        testing_loss = evaluate_model(local_model, test_loader, loss_function, tqdm_desc='Local Testing Loss')
             
             
 
