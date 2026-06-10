@@ -18,8 +18,12 @@ def train_model(model,mode = True):
     try: ## Tell model to try doing this
         yield model.train(mode) ## If mode if False then it goes to eval if true goes to training
     finally: ## Doesnot matter the condition model has to do this 
+        for i, module in enumerate(model.modules()):
+            module.training = modes[i]
 
+def eval_mode(model):
+    return train_model(model, False)
 def evaluate_model(model, data_loader, loss_function, tqdm_desc = None, seed = 42):
     device = model.device
     loss_metric = utils.MeanMetric()
-    with eval_model(model)
+    with eval_model(model):
