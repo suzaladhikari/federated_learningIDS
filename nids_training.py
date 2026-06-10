@@ -12,6 +12,9 @@ import numpy as np
 import collections
 from tqdm import tqdm 
 import utils
+
+
+
 @contextmanager
 def train_model(model,mode = True):
     modes = [module.training for module in model.modules()] ## Saving the original state of the model, True or False means active or inactive
@@ -21,12 +24,23 @@ def train_model(model,mode = True):
         for i, module in enumerate(model.modules()):
             module.training = modes[i] ## Storing back the original state 
 
-def eval_mode(model):
+def eval_mode(model): ## Putting the training model into evaluation temporarily
     return train_model(model, False)
 
 
 @torch.no_grad()
 def evaluate_model(model, data_loader, loss_function, tqdm_desc = None, seed = 42):
-    device = model.device
-    loss_metric = utils.MeanMetric()
-    with eval_model(model):
+    device = model.device ## setting up the device 
+    loss_metric = utils.MeanMetric() ## Setting upthe loss 
+    with eval_model(model): ## This calls the eval mode
+        torch.manual_seed(seed)
+        for (x,y) in tqdm(data_loader,desc = tqdm_desc ):
+            x = x.to(device)
+            y = y.to(device)
+            loss = loss_function(model(x), y)
+            loss_metric.update_state(loss.item())
+
+        return loss_metric.result()
+    
+    
+
