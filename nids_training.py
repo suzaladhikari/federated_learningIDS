@@ -27,7 +27,7 @@ def train_model(model,mode = True):
         for i, module in enumerate(model.modules()):
             module.training = modes[i] ## Storing back the original state 
 
-def eval_mode(model): ## Putting the training model into evaluation temporarily
+def eval_model(model): ## Putting the training model into evaluation temporarily
     return train_model(model, False)
 
 
