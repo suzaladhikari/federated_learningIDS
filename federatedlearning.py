@@ -5,6 +5,11 @@ import torch
 from torch import nn
 from nids_training import evaluate_model
 
+### Averaging the weights 
+def weight_averaging(weight_list, num_sample_list):
+    total_samples = sum(num_sample_list)
+    
+
 def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs, optimizier_args):
     local_model = copy.deepcopy(global_model) ## Copying the global model and use it in the local clients
     ### Starting the training process
