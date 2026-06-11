@@ -12,10 +12,8 @@ def weight_averaging(weight_list, num_sample_list, device):
     keys = weight_list[0].keys() ## Since all of the clients share the same layer, we are extracting the keys
     weight_average = collections.OrderedDict() ## Creating a dictionary to store updated weights
 
-    device = weight_list[0][list(keys)[0]].device
-    device = num_sample_list.device
     for k in keys:
-        weight_average[k] = torch.zeros(weight_list[0][k].size()) ## Creating the weight average dictionary which stores all the zeros of the size of the layers and bias 
+        weight_average[k] = torch.zeros(weight_list[0][k].size()).to(device) ## Creating the weight average dictionary which stores all the zeros of the size of the layers and bias 
     for k in keys:
         for i in range(len(weight_list)): ## Go to each client
             weight_average[k] += weight_list[i][k] * num_sample_list[i] ## Average their weight times the samples
