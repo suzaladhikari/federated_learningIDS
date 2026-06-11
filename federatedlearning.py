@@ -7,16 +7,17 @@ from nids_training import evaluate_model
 
 ### Averaging the weights 
 def weight_averaging(weight_list, num_sample_list):
-    total_samples = sum(num_sample_list)
-    keys = weight_list[0].keys()
-    weight_average = collections.OrderedDict()
+    total_samples = sum(num_sample_list) ## Sum of all the weights of all the layers of all the clients 
+    keys = weight_list[0].keys() ## Since all of the clients share the same layer, we are extracting the keys
+    weight_average = collections.OrderedDict() ## Creating a dictionary to store updated weights
     for k in keys:
         weight_average[k] = torch.zeros(weight_list[0][k].size()) ## Creating the weight average dictionary which stores all the zeros of the size of the layers and bias 
     for k in keys:
-        for i in range(len(weight_list)):
-            weight_average[k] += weight_list[i][k] * total_samples[i]
+        for i in range(len(weight_list)): ## Go to each client
+            weight_average[k] += weight_list[i][k] * total_samples[i] ## Average their weight times the samples
+        weight_average[k] = torch.div(weight_average[k], total_samples) ## Dividing the whole mulitiplication by the total samples count 
         weight_average[k]
-    
+    return weight_average
 
 def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs, optimizier_args):
     local_model = copy.deepcopy(global_model) ## Copying the global model and use it in the local clients
