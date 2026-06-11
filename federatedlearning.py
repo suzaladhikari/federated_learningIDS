@@ -13,6 +13,7 @@ def weight_averaging(weight_list, num_sample_list, device):
     weight_average = collections.OrderedDict() ## Creating a dictionary to store updated weights
 
     device = weight_list[0][list(keys)[0]].device
+    device = num_sample_list.device
     for k in keys:
         weight_average[k] = torch.zeros(weight_list[0][k].size()) ## Creating the weight average dictionary which stores all the zeros of the size of the layers and bias 
     for k in keys:
