@@ -8,6 +8,14 @@ from nids_training import evaluate_model
 ### Averaging the weights 
 def weight_averaging(weight_list, num_sample_list):
     total_samples = sum(num_sample_list)
+    keys = weight_list[0].keys()
+    weight_average = collections.OrderedDict()
+    for k in keys:
+        weight_average[k] = torch.zeros(weight_list[0][k].size()) ## Creating the weight average dictionary which stores all the zeros of the size of the layers and bias 
+    for k in keys:
+        for i in range(len(weight_list)):
+            weight_average[k] += weight_list[i][k] * total_samples[i]
+        weight_average[k]
     
 
 def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs, optimizier_args):
