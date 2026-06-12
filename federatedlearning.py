@@ -29,17 +29,17 @@ def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs,
     optimizer = torch.optim.Adam(local_model.parameters(), **optimizier_args) ## Using the Adam Optimization that takes the kwargs of the optimizer_args dictionary which can contain any parameters
     loss_function = nn.CrossEntropyLoss() ## Using the cross entropy loss
 
-    for epoch in range(num_local_epohcs):
+    for epoch in range(num_local_epohcs): ## Looping through each epch 
         ## Using the tqdm to track the progess bar virtually 
-        for (x,y) in tqdm(client_loader, desc = 'epoch {}/{}'.format(epoch+1, num_local_epohcs)):
-            optimizer.zero_grad()
-            x = x.to(device)
+        for (x,y) in tqdm(client_loader, desc = 'epoch {}/{}'.format(epoch+1, num_local_epohcs)): ## In number of batches 
+            optimizer.zero_grad() ## Clearing out the gradient  
+            x = x.to(device) 
             y = y.to(device)
-            loss = loss_function(local_model(x), y)
-            loss.backward()
-            optimizer.step()
+            loss = loss_function(local_model(x), y) ## Calculating the loss
+            loss.backward() ## Back propagation 
+            optimizer.step() ## Optimization of the model weights
         
-    training_loss = evaluate_model(local_model, client_loader, loss_function, tqdm_desc='Local Training Loss')
+    training_loss = evaluate_model(local_model, client_loader, loss_function, tqdm_desc='Local Training Loss')   ## The updated weight model is sent for further evaluation. 
     testing_loss = evaluate_model(local_model, test_loader, loss_function, tqdm_desc='Local Testing Loss')
             
       ## Returning the dictionary 

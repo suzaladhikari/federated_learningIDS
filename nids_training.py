@@ -37,13 +37,13 @@ def evaluate_model(model, data_loader, loss_function, tqdm_desc = None, seed = 4
     loss_metric = utils.MeanMetric() ## Setting upthe loss 
     with eval_model(model): ## This calls the eval mode
         torch.manual_seed(seed)
-        for (x,y) in tqdm(data_loader,desc = tqdm_desc ):
+        for (x,y) in tqdm(data_loader,desc = tqdm_desc ): ## In the each batch of the data 
             x = x.to(device)
             y = y.to(device)
-            loss = loss_function(model(x), y)
-            loss_metric.update_state(loss.item())
+            loss = loss_function(model(x), y) ## The loss is calculated
+            loss_metric.update_state(loss.item()) ## And using mean metric the given loss is updated
 
-        return loss_metric.result()
+        return loss_metric.result() ## The loss_metric result which is 
     
 
 ## Everything the evaulate_model is doing is temporarily evaulating them model and if something goes wrong boom restore the model's original state 
