@@ -21,14 +21,6 @@ def weight_averaging(weight_list, num_sample_list, device):
         weight_average[k]
     return weight_average
 
-def fednova_weight_averaging(weight_list, num_samples, tau_k,device):
-    total_samples = sum(num_samples) ## Total number of samples
-    keys = weight_list[0].keys()
-    weight_average = collections.OrderedDict()
-    for k in keys:
-        weight_average[k] = torch.zeros(weight_list[0][k].size()).to(device)
-    
-
 def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs, optimizier_args):
     local_model = copy.deepcopy(global_model) ## Copying the global model and use it in the local clients
     ### Starting the training process
@@ -59,6 +51,29 @@ def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs,
       }      
     
     return local_update
+
+
+
+### This is used when the model asks for the weight update: FedNova
+
+def fednova_weight_averaging(global_model, weight_list, num_samples, tau_k,device, learning_rate):
+    global_weights = global_model.state_dict()
+    total_samples = sum(num_samples) ## Total number of samples
+    keys = weight_list[0].keys()
+    weight_average = collections.OrderedDict()
+    for k in keys:
+        weight_average[k] = torch.zeros(weight_list[0][k].size()).to(device)
+    for i in range(len(weight_list)): ## This is the number of clients
+        client_contribution = num_samples[i]/total_samples
+        tau = tau_k[i] ## Tau value of each client
+
+        for k in keys:
+            weight_average[k] += client_contribution * (weight_list[i][k]/tau)
+    new_global_weights = collections.OrderedDict()
+
+    for k in keys:
+        new_global_weights[k] = global_weights[k] - learning_rate * weight_average[k]
+    return weight_average
 
 
 def fednova_update_from_local(global_model, client_loader, test_loader, num_local_epochs, optimizer_args):
