@@ -74,14 +74,13 @@ def fednova_update_from_local(global_model, client_loader, test_loader, num_loca
     global_weights = global_model.state_dict()
     local_weights = local_model.state_dict()
     for key in global_weights.keys(): ### Caculating the change in weight in each layer
-        change_weight = global_weights- local_weights
-        delta_weights[key] = change_weight
+        delta_weights[key] = global_weights[key]- local_weights[key]
 
     training_loss = evaluate_model(local_model, client_loader, loss_function, tqdm_desc='Local Training Loss')   ## The updated weight model is sent for further evaluation. 
     testing_loss = evaluate_model(local_model, test_loader, loss_function, tqdm_desc='Local Testing Loss')
 
     local_update = {
-        'tow_k': tow_k,
+        'tau_k': tow_k,
         'delta_weights': delta_weights,
         'num_samples': len(client_loader.dataset),
         'training_loss': training_loss,
