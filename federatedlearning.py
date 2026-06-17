@@ -73,7 +73,7 @@ def fednova_weight_averaging(global_model, weight_list, num_samples, tau_k,devic
 
     for k in keys:
         new_global_weights[k] = global_weights[k] - learning_rate * weight_average[k]
-    return weight_average
+    return new_global_weights
 
 
 def fednova_update_from_local(global_model, client_loader, test_loader, num_local_epochs, optimizer_args):
