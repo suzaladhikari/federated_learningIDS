@@ -54,7 +54,11 @@ def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs,
 
 
 def fednova_update_from_local(global_model, client_loader, test_loader, num_local_epochs, optimizer_args):
-    pass 
+    local_model = global_model.deepcopy() 
+    local_model.train()
+    device = local_model.device
+    optimizer = torch.optim.Adam(local_model.parameters(), **optimizer_args)
+    loss_function = nn.CrossEntropyLoss() ## Using the cross entropy loss
 
 
 
