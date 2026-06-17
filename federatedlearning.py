@@ -53,4 +53,6 @@ def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs,
     return local_update
 
 
+def fednova_update_from_local(gloabl_model, client_loader, test_loader, num_local_epochs, optimizer_args):
+    
 
