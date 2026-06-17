@@ -54,7 +54,7 @@ def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs,
 
 
 def fednova_update_from_local(global_model, client_loader, test_loader, num_local_epochs, optimizer_args):
-    local_model = global_model.deepcopy() 
+    local_model = copy.deepcopy(global_model) 
     local_model.train()
     device = local_model.device
     optimizer = torch.optim.Adam(local_model.parameters(), **optimizer_args)
@@ -70,6 +70,15 @@ def fednova_update_from_local(global_model, client_loader, test_loader, num_loca
             loss.backward()
             optimizer.step()
         
+    delta_weights = {} ## Storing how much the local weight has been changed by the client
+    global_weights = global_model.state_dict()
+    local_weights = local_model.state_dict()
+    for key in global_weights.keys(): ### Caculating the change in weight in each layer
+        change_weight = global_weights- local_weights
+        delta_weights[key] = change_weight
+
+    training_loss = evaluate_model(local_model, client_loader, loss_function, tqdm_desc='Local Training Loss')   ## The updated weight model is sent for further evaluation. 
+    testing_loss = evaluate_model(local_model, test_loader, loss_function, tqdm_desc='Local Testing Loss')
 
 
 
