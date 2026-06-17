@@ -80,7 +80,7 @@ def fednova_update_from_local(global_model, client_loader, test_loader, num_loca
     local_model = copy.deepcopy(global_model) 
     local_model.train()
     device = local_model.device
-    optimizer = torch.optim.Adam(local_model.parameters(), **optimizer_args)
+    optimizer = torch.optim.SGD(local_model.parameters(), lr=optimizer_args['lr'], momentum=0.9)
     loss_function = nn.CrossEntropyLoss() ## Using the cross entropy loss
     tow_k = 0 ## Here tow_k stores the number of gradients performed by each client to adjust the weight/ number of total batches 
     for epoch in range(num_local_epochs):
