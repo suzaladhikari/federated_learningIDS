@@ -60,20 +60,23 @@ def fednova_weight_averaging(global_model, weight_list, num_samples, tau_k,devic
     global_weights = global_model.state_dict()
     total_tau = sum(tau_k) ## Total number of samples
     keys = weight_list[0].keys()
-    weight_average = collections.OrderedDict()
     total_samples = sum(num_samples)
-    for k in keys:
-        weight_average[k] = torch.zeros(weight_list[0][k].size()).to(device)
-    for i in range(len(weight_list)): ## This is the number of clients
-        client_contribution = tau_k[i]/total_tau
-        tau = tau_k[i] ## Tau value of each client
-        effective_learning_rate = learning_rate*(total_tau/total_samples)
-        for k in keys:
-            weight_average[k] += client_contribution * (weight_list[i][k])
-    new_global_weights = collections.OrderedDict()
+
+    p_i = [num/ total_samples for num in num_samples]
+
+    tau_efficient = sum(p_i[i] / tau_k[i] for i in range(len(weight_list)))
+
+    normalized_weight_average = collections.OrderedDict()
 
     for k in keys:
-        new_global_weights[k] = global_weights[k] - effective_learning_rate * weight_average[k]
+        normalized_weight_average[k] = torch.zeros(weight_list[0][k].size()).to(device)
+    for i in range(len(weight_list)): ## This is the number of clients
+        client_contribution = p_i[i]/tau_k[i]
+        for k in keys:
+            normalized_weight_average[k] += client_contribution * (weight_list[i][k]).to(device)
+    new_global_weights = collections.OrderedDict()
+    for k in keys:
+        new_global_weights[k] = global_weights[k] - tau_efficient * normalized_weight_average[k]
     return new_global_weights
 
 
