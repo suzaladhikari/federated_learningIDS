@@ -58,21 +58,22 @@ def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs,
 
 def fednova_weight_averaging(global_model, weight_list, num_samples, tau_k,device, learning_rate):
     global_weights = global_model.state_dict()
-    total_samples = sum(num_samples) ## Total number of samples
+    total_tau = sum(tau_k) ## Total number of samples
     keys = weight_list[0].keys()
     weight_average = collections.OrderedDict()
+    total_samples = sum(num_samples)
     for k in keys:
         weight_average[k] = torch.zeros(weight_list[0][k].size()).to(device)
     for i in range(len(weight_list)): ## This is the number of clients
-        client_contribution = num_samples[i]/total_samples
+        client_contribution = tau_k[i]/total_tau
         tau = tau_k[i] ## Tau value of each client
-
-        for k in keys:
-            weight_average[k] += client_contribution * (weight_list[i][k]/tau)
+    effective_learning_rate = learning_rate*(total_tau/total_samples)
+    for k in keys:
+            weight_average[k] += client_contribution * (weight_list[i][k])
     new_global_weights = collections.OrderedDict()
 
     for k in keys:
-        new_global_weights[k] = global_weights[k] - learning_rate * weight_average[k]
+        new_global_weights[k] = global_weights[k] - effective_learning_rate * weight_average[k]
     return new_global_weights
 
 
@@ -89,9 +90,9 @@ def fednova_update_from_local(global_model, client_loader, test_loader, num_loca
             x = x.to(device)
             y = y.to(device)
             loss = loss_function(local_model(x), y)
-            tow_k+= 1
             loss.backward()
             optimizer.step()
+            tow_k+= 1
         
     delta_weights = {} ## Storing how much the local weight has been changed by the client
     global_weights = global_model.state_dict()
