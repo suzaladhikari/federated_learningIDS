@@ -64,7 +64,7 @@ def fednova_weight_averaging(global_model, weight_list, num_samples, tau_k,devic
 
     p_i = [num/ total_samples for num in num_samples]
 
-    tau_efficient = sum(p_i[i] / tau_k[i] for i in range(len(weight_list)))
+    tau_efficient = sum(p_i[i] * tau_k[i] for i in range(len(weight_list)))
 
     normalized_weight_average = collections.OrderedDict()
 
