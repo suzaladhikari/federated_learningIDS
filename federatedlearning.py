@@ -67,8 +67,8 @@ def fednova_weight_averaging(global_model, weight_list, num_samples, tau_k,devic
     for i in range(len(weight_list)): ## This is the number of clients
         client_contribution = tau_k[i]/total_tau
         tau = tau_k[i] ## Tau value of each client
-    effective_learning_rate = learning_rate*(total_tau/total_samples)
-    for k in keys:
+        effective_learning_rate = learning_rate*(total_tau/total_samples)
+        for k in keys:
             weight_average[k] += client_contribution * (weight_list[i][k])
     new_global_weights = collections.OrderedDict()
 
