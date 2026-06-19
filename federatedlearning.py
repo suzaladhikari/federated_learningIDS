@@ -52,8 +52,41 @@ def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs,
     
     return local_update
 
+def fed_prox_update_from_local(global_model, client_loader, test_loader, num_local_epochs, optimization_args):
+    lambda_= 0.01
+    local_model = copy.deepcopy(global_model)
+    ### Starting the training process
+    local_model.train()
+    device = local_model.device ## Using the same device local model is uisng to store 
+    optimizer = torch.optim.Adam(local_model.parameters(), **optimization_args) ## Using the Adam Optimization that takes the kwargs of the optimizer_args dictionary which can contain any parameters
+    loss_function = nn.CrossEntropyLoss() ## Using the cross entropy loss
 
-
+    for epoch in range(num_local_epochs): ## Looping through each epch 
+        ## Using the tqdm to track the progess bar virtually 
+        for (x,y) in tqdm(client_loader, desc = 'epoch {}/{}'.format(epoch+1, num_local_epochs)): ## In number of batches 
+            optimizer.zero_grad() ## Clearing out the gradient  
+            x = x.to(device) 
+            y = y.to(device)
+            loss = loss_function(local_model(x), y) ## Calculating the loss
+            reg_loss = 0.0
+            for param,global_param in zip(local_model.parameters(), global_model.parameters()):
+                reg_loss += torch.norm(param-global_param, p = 2) ** 2
+            total_loss = loss + lambda_ / 2 * reg_loss
+            loss.backward() ## Back propagation 
+            optimizer.step() ## Optimization of the model weights
+        
+    training_loss = evaluate_model(local_model, client_loader, loss_function, tqdm_desc='Local Training Loss')   ## The updated weight model is sent for further evaluation. 
+    testing_loss = evaluate_model(local_model, test_loader, loss_function, tqdm_desc='Local Testing Loss')
+            
+      ## Returning the dictionary 
+    local_update = {
+        'local_weights': local_model.state_dict(),
+        'num_samples': len(client_loader.dataset),
+        'train_loss': training_loss,
+        'test_loss': testing_loss  
+      }      
+    
+    return local_update
 ### This is used when the model asks for the weight update: FedNova
 
 def fednova_weight_averaging(global_model, weight_list, num_samples, tau_k,device, learning_rate):
@@ -118,4 +151,7 @@ def fednova_update_from_local(global_model, client_loader, test_loader, num_loca
     }
 
     return local_update
+
+
+
 
