@@ -87,14 +87,18 @@ def fednova_update_from_local(global_model, client_loader, test_loader, num_loca
     loss_function = nn.CrossEntropyLoss() ## Using the cross entropy loss
     tow_k = 0 ## Here tow_k stores the number of gradients performed by each client to adjust the weight/ number of total batches 
     for epoch in range(num_local_epochs):
+        epoch_loss = 0
         for (x,y) in tqdm(client_loader, desc = 'epoch {}/{}'.format(epoch+1, num_local_epochs)):
+        
             optimizer.zero_grad()
             x = x.to(device)
             y = y.to(device)
             loss = loss_function(local_model(x), y)
             loss.backward()
             optimizer.step()
+            epoch_loss += loss.item()
             tow_k+= 1
+        print(f"Epoch {epoch+1} avg loss: {epoch_loss/len(client_loader):.4f}") 
         
     delta_weights = {} ## Storing how much the local weight has been changed by the client
     global_weights = global_model.state_dict()
