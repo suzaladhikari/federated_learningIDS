@@ -65,7 +65,6 @@ def fednova_weight_averaging(global_model, weight_list, num_samples, tau_k,devic
     p_i = [num/ total_samples for num in num_samples]
 
     tau_efficient = sum(p_i[i] * tau_k[i] for i in range(len(weight_list)))
-
     normalized_weight_average = collections.OrderedDict()
 
     for k in keys:
@@ -76,7 +75,7 @@ def fednova_weight_averaging(global_model, weight_list, num_samples, tau_k,devic
             normalized_weight_average[k] += client_contribution * (weight_list[i][k]).to(device)
     new_global_weights = collections.OrderedDict()
     for k in keys:
-        new_global_weights[k] = global_weights[k] - (tau_efficient * learning_rate) normalized_weight_average[k]
+        new_global_weights[k] = global_weights[k] -normalized_weight_average[k]
     return new_global_weights
 
 
