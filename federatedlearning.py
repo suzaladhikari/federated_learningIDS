@@ -186,3 +186,10 @@ def hierar_fednova_weight_averageing(global_model, weight_list, num_samples, tau
         for k in keys:
             small_clients_weight_averaging[k] += small_each_contribute * weight_list[i][k].to(device)
     
+    ### Combining both of them : 
+
+    new_global_weights = collections.OrderedDict()
+    for k in keys:
+        new_global_weights[k] = global_weights[k] - (alpha * large_clients_weight_averaging[k] + (1-alpha) * large_clients_weight_averaging[k])
+    
+    return new_global_weights
