@@ -160,3 +160,10 @@ def hierar_fednova_weight_averageing(global_model, weight_list, num_samples, tau
     global_weights = global_model.state_dict()
     keys = weight_list[0].keys()
     total_samples = sum(num_samples)
+
+    ### Defining the groups based on their total data contribution 
+    large_clients = [0,1]
+    small_clients = [2,3]
+
+    large_samples = sum(num_samples[i] for i in large_clients) ## Total samples of data in the large clients
+    large_clients_weight_averaging = collections.OrderedDict()
