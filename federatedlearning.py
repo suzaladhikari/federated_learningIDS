@@ -167,3 +167,7 @@ def hierar_fednova_weight_averageing(global_model, weight_list, num_samples, tau
 
     large_samples = sum(num_samples[i] for i in large_clients) ## Total samples of data in the large clients
     large_clients_weight_averaging = collections.OrderedDict()
+
+    for k in keys:
+        large_clients_weight_averaging[k] = torch.zeros(weight_list[0][k].size()).to(device)
+    
