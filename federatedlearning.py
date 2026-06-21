@@ -72,7 +72,7 @@ def fed_prox_update_from_local(global_model, client_loader, test_loader, num_loc
             for param,global_param in zip(local_model.parameters(), global_model.parameters()):
                 reg_loss += torch.norm(param-global_param, p = 2) ** 2
             total_loss = loss + lambda_ / 2 * reg_loss
-            loss.backward() ## Back propagation 
+            total_loss.backward() ## Back propagation 
             optimizer.step() ## Optimization of the model weights
         
     training_loss = evaluate_model(local_model, client_loader, loss_function, tqdm_desc='Local Training Loss')   ## The updated weight model is sent for further evaluation. 
@@ -156,7 +156,7 @@ def fednova_update_from_local(global_model, client_loader, test_loader, num_loca
 
 
 ### Purposed Solution: Hierarchical Federated Nova Weight Calculation
-def hierar_fednova_weight_averageing(global_model, weight_list, num_samples, tau_k, device, alpha = 0.5):
+def hierar_fednova_weight_averageing(global_model, weight_list, num_samples, tau_k, device, alpha = 0.8):
     global_weights = global_model.state_dict()
     keys = weight_list[0].keys()
     total_samples = sum(num_samples)
