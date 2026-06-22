@@ -157,7 +157,7 @@ def fednova_update_from_local(global_model, client_loader, test_loader, num_loca
 
 
 ### Purposed Solution: Hierarchical Federated Nova Weight Calculation
-def hierar_fednova_weight_averageing(global_model, weight_list, num_samples, tau_k, device, alpha = 0.8,  server_learning_rate):
+def hierar_fednova_weight_averageing(global_model, weight_list, num_samples, tau_k, device, alpha = 0.8,  server_learning_rate = 2.0):
     global_weights = global_model.state_dict()
     keys = weight_list[0].keys()
     total_samples = sum(num_samples)
