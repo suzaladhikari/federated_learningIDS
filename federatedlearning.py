@@ -40,7 +40,7 @@ def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs,
     ### Starting the training process
     local_model.train()
     device = local_model.device ## Using the same device local model is uisng to store 
-    optimizer = torch.optim.Adam(local_model.parameters(), **optimizier_args) ## Using the Adam Optimization that takes the kwargs of the optimizer_args dictionary which can contain any parameters
+    optimizer = torch.optim.SGD(local_model.parameters(),momentum=0.9, **optimizier_args) ## Using the Adam Optimization that takes the kwargs of the optimizer_args dictionary which can contain any parameters
     loss_function = nn.CrossEntropyLoss() ## Using the cross entropy loss
 
     for epoch in range(num_local_epohcs): ## Looping through each epch 
@@ -73,7 +73,7 @@ def fed_prox_update_from_local(global_model, client_loader, test_loader, num_loc
     ### Starting the training process
     local_model.train()
     device = local_model.device ## Using the same device local model is uisng to store 
-    optimizer = torch.optim.Adam(local_model.parameters(), **optimization_args) ## Using the Adam Optimization that takes the kwargs of the optimizer_args dictionary which can contain any parameters
+    optimizer = torch.optim.SGD(local_model.parameters(), momentum=0.9, **optimization_args) ## Using the Adam Optimization that takes the kwargs of the optimizer_args dictionary which can contain any parameters
     loss_function = nn.CrossEntropyLoss() ## Using the cross entropy loss
 
     for epoch in range(num_local_epochs): ## Looping through each epch 
