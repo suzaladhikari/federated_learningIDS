@@ -4,7 +4,19 @@ from tqdm import tqdm
 import torch
 from torch import nn
 import numpy as np 
+import random 
+import os 
 from nids_training import evaluate_model
+
+### Putting the random seed!
+
+def seed_everything(seed=42):
+    random.seed(seed)
+    os.environ['PYTHONHASHSEED'] = str(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.backends.mps.is_available():
+        torch.mps.manual_seed(seed)
 
 ### Averaging the weights 
 
@@ -23,6 +35,7 @@ def weight_averaging(weight_list, num_sample_list, device):
     return weight_average
 
 def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs, optimizier_args):
+    seed_everything(42)
     local_model = copy.deepcopy(global_model) ## Copying the global model and use it in the local clients
     ### Starting the training process
     local_model.train()
@@ -54,6 +67,7 @@ def updatefrom_local(global_model, client_loader, test_loader, num_local_epohcs,
     return local_update
 
 def fed_prox_update_from_local(global_model, client_loader, test_loader, num_local_epochs, optimization_args):
+    seed_everything(42)
     lambda_= 0.01
     local_model = copy.deepcopy(global_model)
     ### Starting the training process
@@ -115,6 +129,7 @@ def fednova_weight_averaging(global_model, weight_list, num_samples, tau_k,devic
 
 
 def fednova_update_from_local(global_model, client_loader, test_loader, num_local_epochs, optimizer_args):
+    seed_everything(42)
     local_model = copy.deepcopy(global_model) 
     local_model.train()
     device = local_model.device
