@@ -3,6 +3,7 @@ import copy
 from tqdm import tqdm
 import torch
 from torch import nn
+import numpy as np 
 from nids_training import evaluate_model
 
 ### Averaging the weights 
@@ -89,6 +90,7 @@ def fed_prox_update_from_local(global_model, client_loader, test_loader, num_loc
     return local_update
 ### This is used when the model asks for the weight update: FedNova
 
+
 def fednova_weight_averaging(global_model, weight_list, num_samples, tau_k,device, learning_rate):
     global_weights = global_model.state_dict()
     total_tau = sum(tau_k) ## Total number of samples
@@ -108,7 +110,7 @@ def fednova_weight_averaging(global_model, weight_list, num_samples, tau_k,devic
             normalized_weight_average[k] += client_contribution * (weight_list[i][k]).to(device)
     new_global_weights = collections.OrderedDict()
     for k in keys:
-        new_global_weights[k] = global_weights[k] - (tau_efficient * learning_rate) * normalized_weight_average[k]
+        new_global_weights[k] = global_weights[k] - learning_rate * tau_efficient* normalized_weight_average[k]
     return new_global_weights
 
 
@@ -151,7 +153,6 @@ def fednova_update_from_local(global_model, client_loader, test_loader, num_loca
     }
 
     return local_update
-
 
 
 
